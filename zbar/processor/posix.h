@@ -29,6 +29,7 @@
 #include <poll.h>
 #endif
 
+
 #ifdef HAVE_POLL_H
 typedef int(poll_handler_t)(zbar_processor_t *, int);
 
@@ -38,6 +39,8 @@ typedef struct poll_desc_s {
     struct pollfd *fds;	       /* poll descriptors */
     poll_handler_t **handlers; /* poll handlers */
 } poll_desc_t;
+#else
+typedef int(poll_handler_t)(zbar_processor_t *, int);
 #endif
 
 struct processor_state_s {

@@ -301,7 +301,7 @@ static inline void cache_sym(zbar_image_scanner_t *iscn, zbar_symbol_t *sym)
 	if (!entry) {
 	    /* FIXME reuse sym */
 	    entry	     = _zbar_image_scanner_alloc_sym(iscn, sym->type,
-						     sym->datalen + 1);
+							     sym->datalen + 1);
 	    entry->configs   = sym->configs;
 	    entry->modifiers = sym->modifiers;
 	    memcpy(entry->data, sym->data, sym->datalen);
@@ -920,59 +920,63 @@ static void *_zbar_scan_image(zbar_image_scanner_t *iscn, zbar_image_t *img)
     zbar_scanner_new_scan(scn);
 
     density = CFG(iscn, ZBAR_CFG_Y_DENSITY);
-    if (density > 0) {
-	const uint8_t *p = data;
-	int x = 0, y = 0;
+    if (density > 0) 
+	{
+		const uint8_t *p = data;
+		int x = 0, y = 0;
 
-	int border = (((img->crop_h - 1) % density) + 1) / 2;
-	if (border > img->crop_h / 2)
-	    border = img->crop_h / 2;
-	border += img->crop_y;
-	assert(border <= h);
-	svg_group_start("scanner", 0, 1, 1, 0, 0);
-	iscn->dy = 0;
+		int border = (((img->crop_h - 1) % density) + 1) / 2;
+		if (border > img->crop_h / 2)
+			border = img->crop_h / 2;
+		border += img->crop_y;
+		assert(border <= h);
+		svg_group_start("scanner", 0, 1, 1, 0, 0);
+		iscn->dy = 0;
 
-	movedelta(img->crop_x, border);
-	iscn->v = y;
+		movedelta(img->crop_x, border);
+		iscn->v = y;
 
-	while (y < cy1) {
-	    int cx0 = img->crop_x;
-	    ;
-	    zprintf(128, "img_x+: %04d,%04d @%p\n", x, y, p);
-	    svg_path_start("vedge", 1. / 32, 0, y + 0.5);
-	    iscn->dx = iscn->du = 1;
-	    iscn->umin		= cx0;
-	    while (x < cx1) {
-		uint8_t d = *p;
-		movedelta(1, 0);
-		zbar_scan_y(scn, d);
-	    }
-	    ASSERT_POS;
-	    quiet_border(iscn);
-	    svg_path_end();
+		while (y < cy1) 
+		{
+			int cx0 = img->crop_x;
+			;
+			zprintf(128, "img_x+: %04d,%04d @%p\n", x, y, p);
+			svg_path_start("vedge", 1. / 32, 0, y + 0.5);
+			iscn->dx = iscn->du = 1;
+			iscn->umin		= cx0;
+			while (x < cx1) 
+			{
+				uint8_t d = *p;
+				movedelta(1, 0);
+				zbar_scan_y(scn, d);
+			}
+			ASSERT_POS;
+			quiet_border(iscn);
+			svg_path_end();
 
-	    movedelta(-1, density);
-	    iscn->v = y;
-	    if (y >= cy1)
-		break;
+			movedelta(-1, density);
+			iscn->v = y;
+			if (y >= cy1)
+			break;
 
-	    zprintf(128, "img_x-: %04d,%04d @%p\n", x, y, p);
-	    svg_path_start("vedge", -1. / 32, w, y + 0.5);
-	    iscn->dx = iscn->du = -1;
-	    iscn->umin		= cx1;
-	    while (x >= cx0) {
-		uint8_t d = *p;
-		movedelta(-1, 0);
-		zbar_scan_y(scn, d);
-	    }
-	    ASSERT_POS;
-	    quiet_border(iscn);
-	    svg_path_end();
+			zprintf(128, "img_x-: %04d,%04d @%p\n", x, y, p);
+			svg_path_start("vedge", -1. / 32, w, y + 0.5);
+			iscn->dx = iscn->du = -1;
+			iscn->umin		= cx1;
+			while (x >= cx0) 
+			{
+				uint8_t d = *p;
+				movedelta(-1, 0);
+				zbar_scan_y(scn, d);
+			}
+			ASSERT_POS;
+			quiet_border(iscn);
+			svg_path_end();
 
-	    movedelta(1, density);
-	    iscn->v = y;
-	}
-	svg_group_end();
+			movedelta(1, density);
+			iscn->v = y;
+		}
+		svg_group_end();
     }
     iscn->dx = 0;
 

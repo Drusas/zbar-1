@@ -792,7 +792,8 @@ extern zbar_image_t *zbar_image_read(char *filename);
 /*@{*/
 
 struct zbar_processor_s;
-/** opaque standalone processor object. */
+/** opaque standalone processor 
+ * object. */
 typedef struct zbar_processor_s zbar_processor_t;
 
 /** constructor.

@@ -152,7 +152,7 @@ void _zbar_convert_jpeg_to_y(zbar_image_t *dst, const zbar_format_def_t *dstfmt,
     j_decompress_ptr cinfo;
     if (!src->src)
 	cinfo = _zbar_jpeg_decomp_create();
-    else {
+    else { 
 	cinfo = src->src->jpeg;
 	assert(cinfo);
     }
