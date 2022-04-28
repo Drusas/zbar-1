@@ -30,13 +30,13 @@
 #define ENABLE_NLS 1
 
 /* whether to build support for PDF417 symbology (incomplete) */
-#define ENABLE_PDF417 0
+#define ENABLE_PDF417 1
 
 /* whether to build support for QR Code */
-#define ENABLE_QRCODE 1
+#define ENABLE_QRCODE 0
 
 /* whether to build support for SQ Code */
-#define ENABLE_SQCODE 1
+#define ENABLE_SQCODE 0
 
 /* Define to 1 if you have the `alarm' function. */
 #define HAVE_ALARM 1
