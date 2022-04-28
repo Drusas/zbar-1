@@ -4,6 +4,8 @@
 #include <iostream>
 #include <zbar.h>
 #include <stb_image.h>
+#include <stb_image_write.h>
+
 #define STR(s) #s
 
 using namespace std;
@@ -32,7 +34,7 @@ int main(int argc, char **argv)
     // obtain image data
     // Magick::Image magick(argv[1]); // read an image file
     int width, height, channels;
-		std::unique_ptr<stbi_uc, void(*)(void*)> buffer(stbi_load(argv[1], &width, &height, &channels, 4), stbi_image_free);
+		std::unique_ptr<stbi_uc, void(*)(void*)> buffer(stbi_load(argv[1], &width, &height, &channels, 1), stbi_image_free);
 		if (buffer == nullptr) {
 			std::cerr << "Failed to read image: " << filePath << "\n";
 			return -1;
@@ -51,7 +53,9 @@ int main(int argc, char **argv)
     // magick.write(&blob, "GRAY", 8);
     // const void *raw = blob.data();
     unsigned char *raw = buffer.get();
-    std::cout << "buff: " << raw << std::endl;
+    // std::cout << "buff: " << raw << std::endl;
+
+    stbi_write_png("resave.png", width, height, channels, raw, (int)0);
 
     // convert to grayscale
     // Convert the input image to gray
@@ -73,6 +77,9 @@ int main(int argc, char **argv)
              *(pg + 1) = *(p + 3);
          }
      }
+
+     stbi_write_jpg("gray.jpg", width, height, gray_channels, gray_img, 100);
+
   std::cout << "Passing point to Image class" << std::endl;
     // wrap image data
     Image image(width, height, "Y800", gray_img, width * height);

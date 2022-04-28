@@ -10,6 +10,7 @@ add_executable (${PROJECT_NAME} "")
 
 add_definitions(
     -DSTB_IMAGE_IMPLEMENTATION
+    -DSTB_IMAGE_WRITE_IMPLEMENTATION
     )
 
 target_include_directories(scan-image
