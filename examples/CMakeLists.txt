@@ -1,15 +1,20 @@
 cmake_minimum_required(VERSION 3.23)
 
 project(scan-image C CXX ASM)
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_C_STANDARD 11)
+# set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_CXX_FLAGS "--data-sections")
+set(CMAKE_CXX_FLAGS "--data-sections -W --verbose")
 
 add_executable (${PROJECT_NAME} "")
 
+add_definitions(
+    -DSTB_IMAGE_IMPLEMENTATION
+    )
+
 target_include_directories(scan-image
 	PUBLIC
+  ${CMAKE_CURRENT_LIST_DIR}/
     ${CMAKE_CURRENT_LIST_DIR}/../external/stb
     ${CMAKE_CURRENT_LIST_DIR}/../zbar
     ${CMAKE_CURRENT_LIST_DIR}/../include
@@ -28,7 +33,8 @@ target_sources(${PROJECT_NAME}
 
 target_link_libraries(scan-image
     zbar
-    # $ENV{LIBGNUWIN32}/bin/jpeg62.dll
+    $ENV{LIBGNUWIN32}/bin/jpeg62.dll
+    winmm
     # $ENV{LIBGNUWIN32}/bin/libpng3.dll
     # $ENV{LIBGNUWIN32}/bin/libpng12.dll
 )

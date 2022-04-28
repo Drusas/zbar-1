@@ -75,3 +75,6 @@ zbar-*.tar.gz
 
 .vscode/*
 build/
+*.cmake
+CMakeFiles/
+*.a

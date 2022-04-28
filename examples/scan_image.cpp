@@ -1,4 +1,5 @@
 // #include <Magick++.h>
+#include <stdlib.h>
 #include <memory>
 #include <iostream>
 #include <zbar.h>
@@ -36,6 +37,11 @@ int main(int argc, char **argv)
 			std::cerr << "Failed to read image: " << filePath << "\n";
 			return -1;
 		}
+        else
+        {
+            std::cout << "Loaded image: " << filePath << std::endl;
+            std::cout << "width: " << width << " height: " << height << " channels: " << channels << std::endl;
+        }
 
     // int width  = magick.columns(); // extract dimensions
     // int height = magick.rows();
@@ -44,13 +50,38 @@ int main(int argc, char **argv)
     // magick.modifyImage();
     // magick.write(&blob, "GRAY", 8);
     // const void *raw = blob.data();
-    const void *raw = buffer.get();
+    unsigned char *raw = buffer.get();
+    std::cout << "buff: " << raw << std::endl;
 
+    // convert to grayscale
+    // Convert the input image to gray
+    size_t img_size = width * height * channels;
+    int gray_channels = channels == 4 ? 2 : 1;
+    size_t gray_img_size = width * height * gray_channels;
+
+    unsigned char *gray_img = (unsigned char *)malloc(gray_img_size);
+    if(gray_img == NULL) {
+        printf("Unable to allocate memory for the gray image.\n");
+        exit(1);
+    }
+
+    unsigned char *p = raw;
+    for(unsigned char *pg = gray_img; p != raw + img_size; p += channels, pg += gray_channels) {
+        uint8_t val = (uint8_t)((*p + *(p + 1) + *(p + 2))/3.0);
+         *pg = (uint8_t)((*p + *(p + 1) + *(p + 2))/3.0);
+         if(channels == 4) {
+             *(pg + 1) = *(p + 3);
+         }
+     }
+  std::cout << "Passing point to Image class" << std::endl;
     // wrap image data
-    Image image(width, height, "Y800", raw, width * height);
+    Image image(width, height, "Y800", gray_img, width * height);
 
+    std::cout << "Calling scanner.scan" << std::endl;
     // scan the image for barcodes
     int n = scanner.scan(image);
+
+    std::cout << "Scanner return code: " << n << std::endl;
 
     // extract results
     for (Image::SymbolIterator symbol = image.symbol_begin(); symbol != image.symbol_end(); ++symbol) 
